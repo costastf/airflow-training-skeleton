@@ -19,12 +19,10 @@
 
 """Example DAG demonstrating the usage of the BashOperator."""
 
-from datetime import timedelta
-
 import airflow
 from airflow.models import DAG
-from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.bash_operator import BashOperator
+from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 
 arguments = {'dag_id': 'exercise3',
@@ -33,13 +31,10 @@ arguments = {'dag_id': 'exercise3',
              'schedule_interval': None}
 
 
-def _print_exec_date(**context):
-    print(f'I am printing the execution date :{context["execution_date"]}')
-
-
 with DAG(**arguments) as dag:
     task1 = PythonOperator(task_id='print_execution_date',
-                           python_callable=_print_exec_date,
+                           python_callable=lambda context: print((f'I am printing the execution date from a lambda'
+                                                                  f':{context["execution_date"]}')),
                            provide_context=True)
     task2 = BashOperator(task_id='wait_1', bash_command="sleep 1")
     task3 = BashOperator(task_id='wait_5', bash_command="sleep 5")
