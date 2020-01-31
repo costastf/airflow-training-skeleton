@@ -34,7 +34,7 @@ arguments = {'dag_id': 'exercise3',
 
 
 def _print_exec_date(**context):
-    print(context["execution_date"])
+    print(f'I am printing the execution date :{context["execution_date"]}')
 
 
 with DAG(**arguments) as dag:
