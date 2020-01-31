@@ -26,7 +26,8 @@ from airflow.contrib.operators.postgres_to_gcs_operator import PostgresToGoogleC
 from airflow.models import DAG
 
 arguments = {'dag_id': 'exercise5',
-             'default_args': {'owner': 'Costas'},
+             'default_args': {'owner': 'Costas',
+                              'start_date': datetime.datetime.today() - timedelta(seconds=1)},
              'schedule_interval': None}
 
 with DAG(**arguments) as dag:
