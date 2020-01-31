@@ -56,6 +56,8 @@ with DAG(**arguments) as dag:
     email_joe = DummyOperator(task_id='email_joe')
     final_task = BashOperator(task_id='final_task', bash_command='echo DONE!', trigger_rule='one_success')
 
+print(locals())
+print(globals())
 
 print_weekday >> branching
 branching >> email_bob >> final_task
