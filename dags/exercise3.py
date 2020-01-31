@@ -33,8 +33,8 @@ arguments = {'dag_id': 'exercise3',
 
 with DAG(**arguments) as dag:
     task1 = PythonOperator(task_id='print_execution_date',
-                           python_callable=lambda context: print((f'I am printing the execution date from a lambda'
-                                                                  f':{context["execution_date"]}')),
+                           python_callable=lambda **context: print((f'I am printing the execution date from a lambda'
+                                                                    f':{context["execution_date"]}')),
                            provide_context=True)
     task2 = BashOperator(task_id='wait_1', bash_command="sleep 1")
     task3 = BashOperator(task_id='wait_5', bash_command="sleep 5")
