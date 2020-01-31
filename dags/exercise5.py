@@ -36,3 +36,5 @@ with DAG(**arguments) as dag:
                                                            filename='output_file',
                                                            postgres_conn_id='postgres_default',
                                                            google_cloud_storage_conn_id='google_cloud_storage_default ')
+
+postgres_to_gcs
