@@ -19,10 +19,20 @@
 
 """Example DAG demonstrating the usage of the BashOperator."""
 
+import datetime
 
-from airflow.hooks.postgres_hook import PostgresHook
 from airflow.contrib.operators.postgres_to_gcs_operator import PostgresToGoogleCloudStorageOperator
+from airflow.models import DAG
 
-hook = PostgresHook()
-a = hook.get_records("SELECT * FROM land_registry_price_paid_uk LIMIT 10")
-print(a)
+arguments = {'dag_id': 'exercise5',
+             'default_args': {'owner': 'Costas',
+                              'start_date': datetime.datetime.today()},
+             'schedule_interval': None}
+
+with DAG(**arguments) as dag:
+    postgres_to_gcs = PostgresToGoogleCloudStorageOperator(task_id='postgres_to_gcs',
+                                                           sql='SELECT * FROM land_registry_price_paid_uk LIMIT 10',
+                                                           bucket='output_bucket_for_airflow',
+                                                           filename='output_file',
+                                                           postgres_conn_id='postgres_default',
+                                                           google_cloud_storage_conn_id='google_cloud_storage_default ')
