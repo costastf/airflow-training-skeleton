@@ -30,15 +30,16 @@ arguments = {'dag_id': 'exercise4',
                               'start_date': airflow.utils.dates.days_ago(2)},
              'schedule_interval': None}
 
+person_map = {'Mon': 'Bob',
+              'Tue': 'Joe',
+              'Wed': 'Alice',
+              'Thu': 'Joe',
+              'Fri': 'Alice',
+              'Sat': 'Alice',
+              'Sun': 'Alice'}
+
 
 def get_person_for_day(**context):
-    person_map = {'Mon': 'Bob',
-                  'Tue': 'Joe',
-                  'Wed': 'Alice',
-                  'Thu': 'Joe',
-                  'Fri': 'Alice',
-                  'Sat': 'Alice',
-                  'Sun': 'Alice'}
     return f'email_{person_map.get(context["execution_date"].strftime("%a")).lower()}'
 
 
@@ -56,10 +57,7 @@ with DAG(**arguments) as dag:
     email_joe = DummyOperator(task_id='email_joe')
     final_task = BashOperator(task_id='final_task', bash_command='echo DONE!', trigger_rule='one_success')
 
-print(locals())
-print(globals())
-
 print_weekday >> branching
-branching >> email_bob >> final_task
-branching >> email_alice >> final_task
-branching >> email_joe >> final_task
+for name in set(person_map.values()):
+    branching >> locals().get(f'email_{name.lower()}') >> final_task
+
