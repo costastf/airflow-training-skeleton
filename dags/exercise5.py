@@ -20,12 +20,13 @@
 """Example DAG demonstrating the usage of the BashOperator."""
 
 import airflow
+import datetime
 from airflow.contrib.operators.postgres_to_gcs_operator import PostgresToGoogleCloudStorageOperator
 from airflow.models import DAG
 
 arguments = {'dag_id': 'exercise5',
              'default_args': {'owner': 'Costas',
-                              'start_date': airflow.utils.dates.days_ago(2)},
+                              'start_date': datetime.datetime.today()},
              'schedule_interval': None}
 
 with DAG(**arguments) as dag:
