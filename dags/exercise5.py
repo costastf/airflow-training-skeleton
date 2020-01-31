@@ -35,6 +35,4 @@ with DAG(**arguments) as dag:
                                                            bucket='output_bucket_for_airflow',
                                                            filename='output_file',
                                                            postgres_conn_id='postgres_default',
-                                                           google_cloud_storage_conn_id='google_cloud_storage_default ')
-
-postgres_to_gcs
+                                                           google_cloud_storage_conn_id='google_cloud_storage_default')
