@@ -25,7 +25,7 @@ import airflow
 from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
 
-arguments = {'dag_id': 'exercise2_daily',
+arguments = {'dag_id': 'exercise2_3days',
              'default_args': {'owner': 'Costas',
                               'start_date': airflow.utils.dates.days_ago(2)},
              'schedule_interval': '45 13 * * 1,3,5'}
