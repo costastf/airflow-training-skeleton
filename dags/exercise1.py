@@ -30,10 +30,6 @@ args = {
     'start_date': airflow.utils.dates.days_ago(2),
 }
 
-dag = DAG(
-
-)
-
 with DAG(dag_id='exercise1', default_args=args, schedule_interval=None) as dag:
     task1 = DummyOperator(task_id='task1')
     task2 = DummyOperator(task_id='task2')
