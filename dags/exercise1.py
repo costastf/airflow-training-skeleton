@@ -25,12 +25,12 @@ import airflow
 from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
 
-args = {
-    'owner': 'Costas',
-    'start_date': airflow.utils.dates.days_ago(2),
-}
+arguments = {'dag_id': 'exercise1',
+             'default_args': {'owner': 'Costas',
+                              'start_date': airflow.utils.dates.days_ago(2)},
+             'schedule_interval': None}
 
-with DAG(dag_id='exercise1', default_args=args, schedule_interval=None) as dag:
+with DAG(**arguments) as dag:
     task1 = DummyOperator(task_id='task1')
     task2 = DummyOperator(task_id='task2')
     task3 = DummyOperator(task_id='task3')
