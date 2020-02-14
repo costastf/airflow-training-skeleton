@@ -20,7 +20,7 @@
 """Example DAG demonstrating the usage of the BashOperator."""
 
 import json
-from tempfile import TemporaryFile
+from tempfile import NamedTemporaryFile
 
 import airflow
 import requests
@@ -75,7 +75,7 @@ class LaunchLibraryOperator(BaseOperator):
         hook = GoogleCloudStorageHook(
             google_cloud_storage_conn_id=self.google_cloud_storage_conn_id,
             delegate_to=self.delegate_to)
-        temp = TemporaryFile(mode='w+t')
+        temp = NamedTemporaryFile(mode='w+t')
         temp.write(json.dumps(file))
         hook.upload(self.bucket, self.result_key, temp.name,  'application/json', False)
         # temp.close()
