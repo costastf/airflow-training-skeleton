@@ -31,16 +31,18 @@ from airflow.models import DAG
 from airflow.utils.decorators import apply_defaults
 
 
-class LaunchHook(BaseHook):
+class HttpHook(BaseHook):
 
     def __init__(self, url='https://launchlibrary.net/1.4/', endpoint='launch'):
         super().__init__(source=None)
         self._url = url + endpoint
 
-    def get_records(self, start_date, end_date):
+    def get_data(self, start_date, end_date):
         params = {'startdate': start_date, 'enddate': end_date}
-        data = requests.get(self._url, params=params).json()
-        print(data)
+        try:
+            data = requests.get(self._url, params=params).json()
+        except AttributeError:
+            data = {}
         return data
 
 
@@ -49,36 +51,30 @@ class LaunchLibraryOperator(BaseOperator):
     @apply_defaults
     def __init__(self,
                  conn_id,
-                 endoint,
+                 endpoint,
                  params,
                  bucket,
-                 result_key,
+                 filename,
                  google_cloud_storage_conn_id,
                  *args,
                  **kwargs):
         super(LaunchLibraryOperator, self).__init__(*args, **kwargs)
         self.conn_id = conn_id
-        self.endoint = endoint
+        self.endpoint = endpoint
         self.params = params
         self.bucket = bucket
-        self.result_key = result_key
+        self.filename = filename
         self.google_cloud_storage_conn_id = google_cloud_storage_conn_id
         self.delegate_to = None
 
     def execute(self, context):
-        hook = LaunchHook()
-        records = hook.get_records(self.params.get('startdate'), self.params.get('enddate'))
-        self._upload_to_gcs(records)
-
-    def _upload_to_gcs(self, file_contents):
         hook = GoogleCloudStorageHook(
             google_cloud_storage_conn_id=self.google_cloud_storage_conn_id,
             delegate_to=self.delegate_to)
         with NamedTemporaryFile(mode='w+t') as temp_file:
-            temp_file.write(json.dumps(file_contents))
+            temp_file.write(json.dumps(HttpHook().get_data(**self.params)))
             temp_file.flush()
-            hook.upload(self.bucket, self.result_key, temp_file.name,  'application/json', False)
-            print(open(temp_file.name, 'r').read())
+            hook.upload(self.bucket, self.filename, temp_file.name, 'application/json', gzip=False)
 
 
 arguments = {'dag_id': 'exercise6',
@@ -89,8 +85,8 @@ arguments = {'dag_id': 'exercise6',
 with DAG(**arguments) as dag:
     launch_library_to_gcp = LaunchLibraryOperator(task_id='launch_library_to_gcp',
                                                   conn_id='launch_library_default',
-                                                  endoint='launch',
+                                                  endpoint='launch',
                                                   params={'startdate': '{{ ds }}', 'enddate': '{{ tomorrow_ds }}'},
                                                   bucket='mydata34534534',
-                                                  result_key='launches.json',
+                                                  filename='launches.json',
                                                   google_cloud_storage_conn_id='google_cloud_default')
