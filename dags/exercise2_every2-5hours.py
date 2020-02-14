@@ -28,6 +28,7 @@ arguments = {'dag_id': 'exercise2_every2-5hours',
                               'start_date': airflow.utils.dates.days_ago(2)},
              'schedule_interval': '*/30 */2 * * *'}
 
+
 with DAG(**arguments) as dag:
     task1 = DummyOperator(task_id='task1')
     task2 = DummyOperator(task_id='task2')
