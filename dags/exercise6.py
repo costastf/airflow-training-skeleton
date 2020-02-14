@@ -68,15 +68,16 @@ class LaunchLibraryOperator(BaseOperator):
     def execute(self, context):
         hook = LaunchHook()
         records = hook.get_records(self.params.get('startdate'), self.params.get('enddate'))
-        print(records)
         self._upload_to_gcs(records)
 
-    def _upload_to_gcs(self, file):
+    def _upload_to_gcs(self, file_contents):
         hook = GoogleCloudStorageHook(
             google_cloud_storage_conn_id=self.google_cloud_storage_conn_id,
             delegate_to=self.delegate_to)
         temp = NamedTemporaryFile(mode='w+t')
-        temp.write(json.dumps(file))
+        temp.write(json.dumps(file_contents))
+        print(file_contents)
+        print(temp.name)
         hook.upload(self.bucket, self.result_key, temp.name,  'application/json', False)
         temp.close()
 
