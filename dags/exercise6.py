@@ -36,7 +36,7 @@ class LaunchHook(BaseHook):
         super().__init__(source=None)
         self._url = url + endpoint
 
-    def get_launches(self, start_date, end_date):
+    def get_records(self, start_date, end_date):
         params = {'startdate': start_date, 'enddate': end_date}
         return requests.get(self._url, params=params).json()
 
