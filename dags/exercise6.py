@@ -49,7 +49,7 @@ class LaunchLibraryOperator(BaseOperator):
                  conn_id,
                  endoint,
                  params,
-                 result_path,
+                 bucket,
                  result_key,
                  *args,
                  **kwargs):
@@ -58,7 +58,7 @@ class LaunchLibraryOperator(BaseOperator):
         self.conn_id = conn_id
         self.endoint = endoint
         self.params = params
-        self.bucket = result_path
+        self.bucket = bucket
         self.result_key = result_key
         self.google_cloud_storage_conn_id = 'google_cloud_default'
         self.delegate_to = None
