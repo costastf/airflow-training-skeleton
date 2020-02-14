@@ -113,7 +113,7 @@ with DAG(**arguments) as dag:
                                                               'gs://output_bucket_for_airflow/exchange-rates-{{ ds }}.json',
                                                               'output_bucket_for_airflow',
                                                               'EUR',
-                                                              '{{ ds }}'],
+                                                              '{{ yesterday_ds }}'],
                                                    cluster_name='analyse-pricing-{{ ds }}')
     delete_cluster = DataprocClusterDeleteOperator(task_id='delete_cluster',
                                                    cluster_name='analyse-pricing-{{ds}}',
