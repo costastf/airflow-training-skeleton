@@ -111,7 +111,7 @@ with DAG(**arguments) as dag:
                                                    main='gs://output_bucket_for_airflow/build_statistics.py',
                                                    arguments=['gs://output_bucket_for_airflow/prices-{{ ds }}.json',
                                                               'gs://output_bucket_for_airflow/exchange-rates-{{ ds }}.json',
-                                                              'output_bucket_for_airflow',
+                                                              'gs://output_bucket_for_airflow/output.parquet',
                                                               'EUR',
                                                               '{{ yesterday_ds }}'],
                                                    cluster_name='analyse-pricing-{{ ds }}')
