@@ -45,7 +45,6 @@ class LaunchLibraryOperator(BaseOperator):
 
     @apply_defaults
     def __init__(self,
-                 task_id,
                  conn_id,
                  endoint,
                  params,
@@ -55,7 +54,6 @@ class LaunchLibraryOperator(BaseOperator):
                  *args,
                  **kwargs):
         super(LaunchLibraryOperator, self).__init__(*args, **kwargs)
-        self.task_id = task_id
         self.conn_id = conn_id
         self.endoint = endoint
         self.params = params
