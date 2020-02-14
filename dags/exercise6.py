@@ -78,7 +78,9 @@ class LaunchLibraryOperator(BaseOperator):
         temp.write(json.dumps(file_contents))
         print(file_contents)
         print(temp.name)
+        temp.seek(0)
         hook.upload(self.bucket, self.result_key, temp.name,  'application/json', False)
+        print(open(temp.name, 'r').read())
         temp.close()
 
 
