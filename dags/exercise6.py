@@ -84,6 +84,6 @@ with DAG(**arguments) as dag:
                                                   conn_id='launch_library_default',
                                                   endoint='launch',
                                                   params={'startdate': '{{ ds }}', 'enddate': '{{ tomorrow_ds }}'},
-                                                  bucket='mydata',
+                                                  bucket='mydata34534534',
                                                   result_key='/data/rocket_launches/ds={{ ds }}/launches.json',
                                                   google_cloud_storage_conn_id='google_cloud_default')
