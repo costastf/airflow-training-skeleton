@@ -85,7 +85,7 @@ class HttpToGcsOperator(BaseOperator):
 
 with DAG(**arguments) as dag:
     postgres_to_gcs = PostgresToGoogleCloudStorageOperator(task_id='postgres_to_gcs',
-                                                           sql='SELECT * FROM land_registry_price_paid_uk WHERE transfer_date = "{{ ds }}"',
+                                                           sql="SELECT * FROM land_registry_price_paid_uk WHERE transfer_date = '{{ ds }}'",
                                                            bucket='output_bucket_for_airflow',
                                                            filename='prices-{{ ds }}.txt',
                                                            postgres_conn_id='postgres_default',
@@ -93,7 +93,7 @@ with DAG(**arguments) as dag:
     http_to_gcs = HttpToGcsOperator(task_id='http_to_gcs',
                                     endpoint='history?start_at={{ yesterday_ds }}&end_at={{ ds }}&symbols=EUR&base=GBP',
                                     gcs_bucket='output_bucket_for_airflow',
-                                    gcs_path='exchange-rates-{{ ds }}.txt',
+                                    gcs_path='exchange-rates-{{ ds }}.json',
                                     method="GET",
                                     http_conn_id="http_default",
                                     gcs_conn_id="google_cloud_default")
