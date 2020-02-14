@@ -21,18 +21,18 @@
 
 from tempfile import NamedTemporaryFile
 
-import airflow
 from airflow.contrib.hooks.gcs_hook import GoogleCloudStorageHook
+from airflow.contrib.operators.dataproc_operator import (
+    DataprocClusterCreateOperator,
+    DataprocClusterDeleteOperator,
+    DataProcPySparkOperator
+)
 from airflow.contrib.operators.postgres_to_gcs_operator import PostgresToGoogleCloudStorageOperator
 from airflow.hooks.http_hook import HttpHook
 from airflow.models import BaseOperator
 from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.utils.decorators import apply_defaults
-from airflow.contrib.operators.dataproc_operator import (
-    DataprocClusterCreateOperator,
-    DataprocClusterDeleteOperator
-)
 
 arguments = {'dag_id': 'exercise7',
              'default_args': {'owner': 'Costas',
@@ -91,7 +91,7 @@ with DAG(**arguments) as dag:
     postgres_to_gcs = PostgresToGoogleCloudStorageOperator(task_id='postgres_to_gcs',
                                                            sql="SELECT * FROM land_registry_price_paid_uk WHERE transfer_date = '2019-11-27'",
                                                            bucket='output_bucket_for_airflow',
-                                                           filename='prices-{{ ds }}.txt',
+                                                           filename='prices-{{ ds }}.json',
                                                            postgres_conn_id='postgres_default',
                                                            google_cloud_storage_conn_id='google_cloud_storage_default')
     http_to_gcs = HttpToGcsOperator(task_id='http_to_gcs',
@@ -101,9 +101,23 @@ with DAG(**arguments) as dag:
                                     method="GET",
                                     http_conn_id="http_default",
                                     gcs_conn_id="google_cloud_default")
-    setup_cluster = DummyOperator(task_id='setup_cluster')
-    calculate_statistics = DummyOperator(task_id='calculate_statistics')
-    tear_down_cluster = DummyOperator(task_id='tear_down_cluster')
+    create_cluster = DataprocClusterCreateOperator(task_id='create_cluster',
+                                                   project_id='afspfeb3-28e3a1b32a56613ef127e',
+                                                   cluster_name='analyse-pricing-{{ ds }}',
+                                                   num_workers=2,
+                                                   zone='europe-west4-a')
+    calculate_statistics = DataProcPySparkOperator(task_id='calculate_statistics',
+                                                   main='gs://output_bucket_for_airflow/build_statistics.py',
+                                                   arguments=['gs://output_bucket_for_airflow/prices-{{ ds }}.json',
+                                                              'gs://output_bucket_for_airflow/exchange-rates-{{ ds }}.json',
+                                                              'output_bucket_for_airflow',
+                                                              'EUR',
+                                                              '{{ ds }}'],
+                                                   cluster_name='analyse-pricing-{{ ds }}')
+    delete_cluster = DataprocClusterDeleteOperator(task_id='delete_cluster',
+                                                   cluster_name='analyse-pricing-{{ds}}',
+                                                   project_id='afspfeb3-28e3a1b32a56613ef127e',
+                                                   region='global')
     statistics_to_big_query = DummyOperator(task_id='statistics_to_big_query')
 
-[postgres_to_gcs, http_to_gcs] >> setup_cluster >> calculate_statistics >> tear_down_cluster >> statistics_to_big_query
+[postgres_to_gcs, http_to_gcs] >> create_cluster >> calculate_statistics >> delete_cluster >> statistics_to_big_query
