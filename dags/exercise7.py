@@ -28,6 +28,7 @@ from airflow.contrib.operators.dataproc_operator import (
     DataProcPySparkOperator
 )
 from airflow.contrib.operators.postgres_to_gcs_operator import PostgresToGoogleCloudStorageOperator
+from airflow.contrib.operators.gcs_to_bq import GoogleCloudStorageToBigQueryOperator
 from airflow.hooks.http_hook import HttpHook
 from airflow.models import BaseOperator
 from airflow.models import DAG
@@ -118,6 +119,14 @@ with DAG(**arguments) as dag:
                                                    cluster_name='analyse-pricing-{{ds}}',
                                                    project_id='afspfeb3-28e3a1b32a56613ef127e',
                                                    region='global')
-    statistics_to_big_query = DummyOperator(task_id='statistics_to_big_query')
+    # statistics_to_big_query = GoogleCloudStorageToBigQueryOperator(task_id='statistics_to_big_query',
+    #                                                                bucket='output_bucket_for_airflow',
+    #                                                                source_objects=[''],
+    #                                                                destination_project_dataset_table,
+    #                                                                schema_fields=None,
+    #                                                                schema_object=None,
+    #                                                                source_format='CSV',
+    #                                                                bigquery_conn_id='bigquery_default',
+    #                                                                google_cloud_storage_conn_id='google_cloud_default')
 
-[postgres_to_gcs, http_to_gcs] >> create_cluster >> calculate_statistics >> delete_cluster >> statistics_to_big_query
+[postgres_to_gcs, http_to_gcs] >> create_cluster >> calculate_statistics >> delete_cluster # >> statistics_to_big_query
