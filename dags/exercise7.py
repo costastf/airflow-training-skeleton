@@ -32,7 +32,7 @@ from airflow.utils.decorators import apply_defaults
 
 arguments = {'dag_id': 'exercise7',
              'default_args': {'owner': 'Costas',
-                              'start_date': airflow.utils.dates.days_ago(1)},
+                              'start_date': '2019-11-28'},
              'schedule_interval': None}
 
 
