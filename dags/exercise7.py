@@ -89,7 +89,7 @@ class HttpToGcsOperator(BaseOperator):
 
 with DAG(**arguments) as dag:
     postgres_to_gcs = PostgresToGoogleCloudStorageOperator(task_id='postgres_to_gcs',
-                                                           sql="SELECT * FROM land_registry_price_paid_uk WHERE transfer_date = '{{ ds }}'",
+                                                           sql="SELECT * FROM land_registry_price_paid_uk WHERE transfer_date = '2019-11-27'",
                                                            bucket='output_bucket_for_airflow',
                                                            filename='prices-{{ ds }}.txt',
                                                            postgres_conn_id='postgres_default',
