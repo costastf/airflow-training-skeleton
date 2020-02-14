@@ -24,6 +24,7 @@ import json
 import airflow
 import requests
 from airflow.contrib.hooks.gcs_hook import GoogleCloudStorageHook
+from tempfile import TemporaryFile
 from airflow.hooks.base_hook import BaseHook
 from airflow.models import BaseOperator
 from airflow.models import DAG
@@ -72,7 +73,10 @@ class LaunchLibraryOperator(BaseOperator):
         hook = GoogleCloudStorageHook(
             google_cloud_storage_conn_id=self.google_cloud_storage_conn_id,
             delegate_to=self.delegate_to)
-        hook.upload(self.bucket, json.dumps(file), self.result_key, 'application/json', False)
+        temp = TemporaryFile()
+        temp.write(json.dumps(file))
+        hook.upload(self.bucket, self.result_key, temp.name,  'application/json', False)
+        temp.close()
 
 
 arguments = {'dag_id': 'exercise6',
