@@ -74,14 +74,11 @@ class LaunchLibraryOperator(BaseOperator):
         hook = GoogleCloudStorageHook(
             google_cloud_storage_conn_id=self.google_cloud_storage_conn_id,
             delegate_to=self.delegate_to)
-        temp = NamedTemporaryFile(mode='w+t')
-        temp.write(json.dumps(file_contents))
-        print(file_contents)
-        print(temp.name)
-        temp.seek(0)
-        hook.upload(self.bucket, self.result_key, temp.name,  'application/json', False)
-        print(open(temp.name, 'r').read())
-        temp.close()
+        with NamedTemporaryFile(mode='w+t') as temp_file:
+            temp_file.write(json.dumps(file_contents))
+            temp_file.flush()
+            hook.upload(self.bucket, self.result_key, temp_file.name,  'application/json', False)
+            print(open(temp_file.name, 'r').read())
 
 
 arguments = {'dag_id': 'exercise6',
