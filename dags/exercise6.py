@@ -39,7 +39,9 @@ class LaunchHook(BaseHook):
 
     def get_records(self, start_date, end_date):
         params = {'startdate': start_date, 'enddate': end_date}
-        return requests.get(self._url, params=params).json()
+        data = requests.get(self._url, params=params).json()
+        print(data)
+        return data
 
 
 class LaunchLibraryOperator(BaseOperator):
