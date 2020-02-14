@@ -29,10 +29,14 @@ from airflow.models import BaseOperator
 from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.utils.decorators import apply_defaults
+from airflow.contrib.operators.dataproc_operator import (
+    DataprocClusterCreateOperator,
+    DataprocClusterDeleteOperator
+)
 
 arguments = {'dag_id': 'exercise7',
              'default_args': {'owner': 'Costas',
-                              'start_date': '2019-11-28'},
+                              'start_date': '2019-11-27'},
              'schedule_interval': None}
 
 
