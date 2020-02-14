@@ -65,6 +65,7 @@ class LaunchLibraryOperator(BaseOperator):
     def execute(self, context):
         hook = LaunchHook()
         records = hook.get_records(self.params.get('startdate'), self.params.get('enddate'))
+        print(records)
         self._upload_to_gcs(records)
 
     def _upload_to_gcs(self, file):
