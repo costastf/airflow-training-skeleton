@@ -78,7 +78,7 @@ class LaunchLibraryOperator(BaseOperator):
         temp = NamedTemporaryFile(mode='w+t')
         temp.write(json.dumps(file))
         hook.upload(self.bucket, self.result_key, temp.name,  'application/json', False)
-        # temp.close()
+        temp.close()
 
 
 arguments = {'dag_id': 'exercise6',
