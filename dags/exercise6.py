@@ -71,7 +71,7 @@ class LaunchLibraryOperator(BaseOperator):
             google_cloud_storage_conn_id=self.google_cloud_storage_conn_id,
             delegate_to=self.delegate_to)
         with NamedTemporaryFile(mode='w+t') as temp_file:
-            temp_file.write(json.dumps(HttpHook().get_data(**self.params)))
+            temp_file.write(json.dumps(HttpHook().get_data(self.params)))
             temp_file.flush()
             hook.upload(self.bucket, self.filename, temp_file.name, 'application/json', gzip=False)
 
