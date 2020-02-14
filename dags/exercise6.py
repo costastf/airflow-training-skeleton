@@ -37,8 +37,7 @@ class HttpHook(BaseHook):
         super().__init__(source=None)
         self._url = url + endpoint
 
-    def get_data(self, start_date, end_date):
-        params = {'startdate': start_date, 'enddate': end_date}
+    def get_data(self, params):
         try:
             data = requests.get(self._url, params=params).json()
         except AttributeError:
