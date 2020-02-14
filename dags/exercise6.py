@@ -20,14 +20,14 @@
 """Example DAG demonstrating the usage of the BashOperator."""
 
 import json
-import pathlib
-import airflow
 
+import airflow
 import requests
 from airflow.contrib.hooks.gcs_hook import GoogleCloudStorageHook
 from airflow.hooks.base_hook import BaseHook
 from airflow.models import BaseOperator
 from airflow.models import DAG
+from airflow.utils.decorators import apply_defaults
 
 
 class LaunchHook(BaseHook):
