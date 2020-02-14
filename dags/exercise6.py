@@ -51,6 +51,7 @@ class LaunchLibraryOperator(BaseOperator):
                  params,
                  bucket,
                  result_key,
+                 google_cloud_storage_conn_id,
                  *args,
                  **kwargs):
         super(LaunchLibraryOperator, self).__init__(*args, **kwargs)
@@ -60,7 +61,7 @@ class LaunchLibraryOperator(BaseOperator):
         self.params = params
         self.bucket = bucket
         self.result_key = result_key
-        self.google_cloud_storage_conn_id = 'google_cloud_default'
+        self.google_cloud_storage_conn_id = google_cloud_storage_conn_id
         self.delegate_to = None
 
     def execute(self, context):
